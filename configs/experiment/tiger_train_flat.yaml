@@ -80,8 +80,8 @@ data_loading:
             _target_: src.data.loading.components.label_function.NextKTokenMasking
             next_k: ${model.num_hierarchies}
       batch_size_per_device: 32
-      num_workers: 8
-      timeout: 60
+      num_workers: 4
+      timeout: 0
       assign_files_by_size: false
       oov_token: null
       masking_token: -1
@@ -143,8 +143,8 @@ data_loading:
             _target_: src.data.loading.components.label_function.NextKTokenMasking
             next_k: ${model.num_hierarchies}
       batch_size_per_device: 8
-      num_workers: 8
-      timeout: 60
+      num_workers: 1
+      timeout: 0
       assign_files_by_size: true
       oov_token: ${data_loading.train_dataloader_config.dataloader.oov_token}
       masking_token: ${data_loading.train_dataloader_config.dataloader.masking_token}
@@ -173,8 +173,8 @@ data_loading:
             _target_: src.data.loading.components.label_function.NextKTokenMasking
             next_k: ${model.num_hierarchies}
       batch_size_per_device: 8
-      num_workers: 8
-      timeout: 60
+      num_workers: 1
+      timeout: 0
       assign_files_by_size: true
       oov_token: ${data_loading.train_dataloader_config.dataloader.oov_token}
       masking_token: ${data_loading.train_dataloader_config.dataloader.masking_token}
@@ -243,13 +243,13 @@ callbacks:
   model_checkpoint:
     _target_: lightning.pytorch.callbacks.ModelCheckpoint
     dirpath: ${paths.output_dir}/checkpoints
-    filename: checkpoint_{epoch:03d}_{step:06d}
+    filename: checkpoint_epoch{epoch:03d}_step{step:06d}
     monitor: val/recall@5
     verbose: true
     save_last: null
     save_top_k: 1
     mode: max
-    auto_insert_metric_name: true
+    auto_insert_metric_name: false
     save_weights_only: false
     every_n_train_steps: null
     train_time_interval: null
@@ -259,7 +259,7 @@ callbacks:
     _target_: lightning.pytorch.callbacks.EarlyStopping
     monitor: ${callbacks.model_checkpoint.monitor}
     min_delta: 0.0
-    patience: 10
+    patience: 6
     verbose: true
     mode: ${callbacks.model_checkpoint.mode}
     strict: true
